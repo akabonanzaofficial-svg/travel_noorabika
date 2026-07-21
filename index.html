@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noor Abika - Travel Umroh & Haji Khusus</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        primary: '#064e3b', // Emerald 900
+                        secondary: '#d97706', // Amber 600 (Gold)
+                        accent: '#10b981', // Emerald 500
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* Custom Styles */
+        body { scroll-behavior: smooth; }
+        .page-section { display: none; animation: fadeIn 0.5s ease-in-out; }
+        .page-section.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .hero-overlay {
+            background: linear-gradient(to right, rgba(6, 78, 59, 0.9), rgba(6, 78, 59, 0.4));
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 bg-gray-50">
+
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="navigate('beranda')">
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white mr-3 shadow-lg">
+                        <i class="fa-solid fa-kaaba text-xl"></i>
+                    </div>
+                    <span class="font-serif text-2xl font-bold text-primary">Noor Abika</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="navigate('beranda')" class="nav-link text-primary font-bold hover:text-primary transition-colors">Beranda</button>
+                    <button onclick="navigate('tentang')" class="nav-link text-gray-600 hover:text-primary font-medium transition-colors">Tentang Kami</button>
+                    <button onclick="navigate('paket')" class="nav-link text-gray-600 hover:text-primary font-medium transition-colors">Paket Umroh</button>
+                    <button onclick="navigate('info')" class="nav-link text-gray-600 hover:text-primary font-medium transition-colors">Info & Testimoni</button>
+                    <button onclick="navigate('galeri')" class="nav-link text-gray-600 hover:text-primary font-medium transition-colors">Galeri</button>
+                    <button onclick="navigate('kontak')" class="bg-secondary text-white px-6 py-2 rounded-full font-medium hover:bg-yellow-600 transition-all shadow-md">Hubungi Kami</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT AREA -->
+    <div id="app-content" class="pt-16 pb-20 md:pb-0">
+        
+        <section id="page-beranda" class="page-section active">
+            <!-- Hero Banner -->
+            <div class="relative bg-gray-900 h-[450px] md:h-[550px]">
+                <!-- Background Image (Megah & Elegan) -->
+                <img src="https://i.ibb.co.com/SXDmL4ws/travel-background.jpg" alt="Background Noor Abika" class="absolute inset-0 w-full h-full object-cover object-center opacity-80" onerror="this.src='https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=2070&q=80';">
+                
+                <div class="absolute inset-0 hero-overlay"></div>
+                
+                <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+                    <div class="text-white max-w-2xl">
+                        <span class="inline-block py-1 px-3 rounded-full bg-secondary/20 border border-secondary text-secondary font-medium text-xs md:text-sm mb-3 md:mb-4 tracking-wider uppercase">
+                            Berizin Resmi Kemenag Sejak 1985
+                        </span>
+                        <h1 class="text-3xl md:text-5xl font-serif font-bold leading-tight mb-4 md:mb-6 text-white drop-shadow-lg">
+                            Perjalanan Suci Penuh Hikmah Bersama <span class="text-secondary">Noor Abika</span>
+                        </h1>
+                        <p class="text-base md:text-lg text-gray-200 mb-6 md:mb-8 font-light leading-relaxed">
+                            Biro perjalanan ibadah umroh dan haji khusus terpercaya. Kami memandu dengan pencerahan, melayani dengan hati, menggapai ibadah yang mabrur.
+                        </p>
+                        <div class="flex flex-wrap gap-3 md:gap-4">
+                            <button onclick="navigate('paket')" class="bg-secondary hover:bg-yellow-600 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-medium text-base md:text-lg transition-all shadow-[0_0_15px_rgba(217,119,6,0.5)]">
+                                Lihat Paket Umroh
+                            </button>
+                            <button onclick="navigate('tentang')" class="bg-white/10 hover:bg-white/20 border border-white/50 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-medium text-base md:text-lg backdrop-blur-sm transition-all">
+                                Pelajari Lebih Lanjut
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="bg-white py-12 border-b border-gray-100 shadow-sm relative z-10 -mt-10 mx-4 md:mx-auto max-w-6xl rounded-2xl">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 px-6 text-center">
+                    <div>
+                        <div class="text-4xl text-primary mb-2"><i class="fa-solid fa-kaaba"></i></div>
+                        <h3 class="text-3xl font-bold text-gray-800" id="stat-jamaah">35,000+</h3>
+                        <p class="text-gray-500 font-medium mt-1">Jamaah Berangkat</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl text-primary mb-2"><i class="fa-solid fa-calendar-check"></i></div>
+                        <h3 class="text-3xl font-bold text-gray-800">38+</h3>
+                        <p class="text-gray-500 font-medium mt-1">Tahun Pengalaman</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl text-primary mb-2"><i class="fa-solid fa-star"></i></div>
+                        <h3 class="text-3xl font-bold text-gray-800">99%</h3>
+                        <p class="text-gray-500 font-medium mt-1">Tingkat Kepuasan</p>
+                    </div>
+                    <div>
+                        <div class="text-4xl text-primary mb-2"><i class="fa-solid fa-plane-departure"></i></div>
+                        <h3 class="text-3xl font-bold text-gray-800">50+</h3>
+                        <p class="text-gray-500 font-medium mt-1">Jadwal Per Tahun</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Info/Berita Terkini -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-serif font-bold text-primary mb-4">Informasi & Berita Terkini</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Dapatkan update terbaru seputar regulasi, tips ibadah, dan berita dari tanah suci.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8" id="beranda-berita-container">
+                    <!-- Injected by JS -->
+                </div>
+                <div class="text-center mt-10">
+                    <button onclick="navigate('info')" class="text-primary font-semibold hover:text-secondary inline-flex items-center">
+                        Lihat Semua Informasi <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-tentang" class="page-section bg-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Header -->
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl font-serif font-bold text-primary mb-4">Tentang Noor Abika</h1>
+                    <div class="w-24 h-1 bg-secondary mx-auto rounded-full"></div>
+                </div>
+
+                <!-- Deskripsi -->
+                <div class="flex flex-col md:flex-row gap-12 items-center mb-20">
+                    <div class="md:w-1/2">
+                        <img src="https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?q=80&w=2070&auto=format&fit=crop" alt="Tim Noor Abika" class="rounded-2xl shadow-xl w-full" onerror="this.src='https://placehold.co/800x600/064e3b/ffffff?text=Tim+Noor+Abika';">
+                    </div>
+                    <div class="md:w-1/2">
+                        <h3 class="text-2xl font-serif font-bold text-gray-800 mb-4">Sejarah Panjang Melayani Tamu Allah</h3>
+                        <p class="text-gray-600 mb-4 leading-relaxed">
+                            PT Noor Abika Tours & Travel adalah perusahaan yang bergerak dalam usaha perjalanan wisata, tiket dan Islamic Tour (Umrah & Haji). Secara operasional mulai aktif sejak tahun 1985 di Kota Bandung, Jawa Barat.
+                        </p>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            Berbekal pengalaman panjang, kami terus berkomitmen "Melayani dengan hati dan komitmen, Memandu dengan pencerahan dan kekhusyuan Ibadah, dan selamanya membangun Ukhuwah Islamiyyah".
+                        </p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <h4 class="font-bold text-primary mb-1">Visi</h4>
+                                <p class="text-sm text-gray-600">Menjadi penyelenggara umrah dan haji khusus dengan pelayanan terbaik dan profesional di Indonesia.</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-xl border border-gray-100">
+                                <h4 class="font-bold text-primary mb-1">Misi</h4>
+                                <p class="text-sm text-gray-600">Mengedepankan kenyamanan, keamanan, kepuasan, dan kekhusyukan ibadah para jamaah.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Legalitas -->
+                <div class="bg-primary text-white rounded-3xl p-10 md:p-16 mb-20 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 opacity-10 text-9xl -mt-10 -mr-10">
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-serif font-bold mb-8 text-center text-secondary">Legalitas Perusahaan</h3>
+                        <div class="grid md:grid-cols-4 gap-6 text-center">
+                            <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
+                                <i class="fa-solid fa-file-signature text-3xl text-secondary mb-3"></i>
+                                <h4 class="font-bold mb-1">Izin Umroh</h4>
+                                <p class="text-sm text-gray-200">No. U.39 Tahun 2020</p>
+                            </div>
+                            <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
+                                <i class="fa-solid fa-book-quran text-3xl text-secondary mb-3"></i>
+                                <h4 class="font-bold mb-1">Izin Haji Khusus</h4>
+                                <p class="text-sm text-gray-200">No. D/384/2017</p>
+                            </div>
+                            <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
+                                <i class="fa-solid fa-passport text-3xl text-secondary mb-3"></i>
+                                <h4 class="font-bold mb-1">Provider Visa</h4>
+                                <p class="text-sm text-gray-200">Resmi Terdaftar</p>
+                            </div>
+                            <div class="p-4 bg-white/10 rounded-xl backdrop-blur-md">
+                                <i class="fa-solid fa-building-user text-3xl text-secondary mb-3"></i>
+                                <h4 class="font-bold mb-1">Keanggotaan</h4>
+                                <p class="text-sm text-gray-200">ASPHURINDO & PIHK</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pengurus -->
+                <div>
+                    <h3 class="text-3xl font-serif font-bold text-center text-primary mb-10">Dewan Pengurus</h3>
+                    <div class="grid md:grid-cols-3 gap-8 text-center" id="pengurus-container">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="page-paket" class="page-section bg-gray-50 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl font-serif font-bold text-primary mb-4">Pilihan Paket Umroh</h1>
+                    <div class="w-24 h-1 bg-secondary mx-auto rounded-full mb-6"></div>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Tersedia berbagai pilihan paket umroh yang disesuaikan dengan kebutuhan Anda, dari paket reguler hingga umroh plus wisata Islami.</p>
+                </div>
+
+                <!-- Paket Cards -->
+                <div class="grid lg:grid-cols-3 gap-8" id="paket-container">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="page-info" class="page-section bg-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Berita & Artikel -->
+                <div class="mb-20">
+                    <div class="flex justify-between items-end mb-10">
+                        <div>
+                            <h1 class="text-4xl font-serif font-bold text-primary mb-4">Artikel & Berita</h1>
+                            <div class="w-24 h-1 bg-secondary rounded-full"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8" id="artikel-container">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Testimoni -->
+                <div class="bg-gray-50 rounded-3xl p-8 md:p-12">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl font-serif font-bold text-primary mb-4">Apa Kata Jamaah Kami?</h2>
+                        <div class="w-16 h-1 bg-secondary mx-auto rounded-full mb-2"></div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-6" id="testimoni-container">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="page-galeri" class="page-section bg-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-tr from-yellow-400 to-pink-500 mb-4 text-white text-2xl">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                    <h1 class="text-4xl font-serif font-bold text-primary mb-4">Galeri Jamaah</h1>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Momen-momen indah dan penuh berkah jamaah Noor Abika selama di Tanah Suci. Ikuti kami <a href="#" class="text-secondary font-bold hover:underline">@noorabikatours</a>.</p>
+                </div>
+
+                <!-- Galeri Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-1 md:gap-4" id="galeri-container">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <section id="page-kontak" class="page-section bg-gray-50 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h1 class="text-4xl font-serif font-bold text-primary mb-4">Hubungi Kami</h1>
+                    <div class="w-24 h-1 bg-secondary mx-auto rounded-full mb-6"></div>
+                    <p class="text-gray-600 max-w-2xl mx-auto">Silakan hubungi kami untuk informasi pendaftaran, konsultasi paket, atau pertanyaan lainnya.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col lg:flex-row">
+                    <!-- Info Kontak -->
+                    <div class="bg-primary text-white p-10 lg:w-2/5 flex flex-col justify-between relative overflow-hidden">
+                        <div class="absolute bottom-0 right-0 opacity-10 w-64 h-64 transform translate-x-16 translate-y-16">
+                            <i class="fa-solid fa-kaaba text-9xl"></i>
+                        </div>
+                        <div class="relative z-10">
+                            <h3 class="text-2xl font-serif font-bold mb-8">Kantor Pusat</h3>
+                            
+                            <div class="space-y-6">
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-location-dot mt-1.5 mr-4 text-secondary text-xl w-6 text-center"></i>
+                                    <div>
+                                        <h5 class="font-bold text-lg mb-1">Alamat</h5>
+                                        <p class="text-gray-300">Graha Panyileukan Asri, Ruko No. 18-19<br>Jl. Soekarno Hatta, Kota Bandung<br>Jawa Barat, Indonesia</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-phone mt-1.5 mr-4 text-secondary text-xl w-6 text-center"></i>
+                                    <div>
+                                        <h5 class="font-bold text-lg mb-1">Telepon</h5>
+                                        <p class="text-gray-300">(022) 7812 201</p>
+                                        <p class="text-gray-300">0819-3303-8700 (WA)</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="fa-solid fa-envelope mt-1.5 mr-4 text-secondary text-xl w-6 text-center"></i>
+                                    <div>
+                                        <h5 class="font-bold text-lg mb-1">Email</h5>
+                                        <p class="text-gray-300">noorabikatours@gmail.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative z-10 mt-12">
+                            <h5 class="font-bold mb-4">Sosial Media</h5>
+                            <div class="flex space-x-4">
+                                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-secondary transition-colors"><i class="fa-brands fa-youtube"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="p-10 lg:w-3/5">
+                        <h3 class="text-2xl font-serif font-bold text-gray-800 mb-8">Kirim Pesan</h3>
+                        <form id="contact-form" onsubmit="handleContact(event)">
+                            <div class="grid grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                                    <input type="text" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">No. WhatsApp</label>
+                                    <input type="tel" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subjek Pendaftaran / Konsultasi</label>
+                                <select class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all bg-white">
+                                    <option>Konsultasi Umroh Reguler</option>
+                                    <option>Konsultasi Umroh Plus</option>
+                                    <option>Pendaftaran Haji Khusus</option>
+                                    <option>Pertanyaan Lainnya</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Pesan</label>
+                                <textarea rows="4" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-primary hover:bg-emerald-800 text-white font-bold py-4 rounded-lg transition-colors flex justify-center items-center">
+                                <i class="fa-solid fa-paper-plane mr-2"></i> Kirim Pesan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Pemesanan Paket -->
+    <div id="booking-modal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl transform scale-95 transition-all">
+            <div class="bg-primary px-6 py-4 flex justify-between items-center text-white">
+                <h3 class="font-serif font-bold text-xl">Formulir Pemesanan</h3>
+                <button onclick="closeModal()" class="text-gray-300 hover:text-white text-2xl focus:outline-none">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4 bg-amber-50 p-3 rounded-lg border border-amber-100 flex items-start">
+                    <i class="fa-solid fa-circle-info text-secondary mt-1 mr-3"></i>
+                    <div>
+                        <p class="text-sm text-gray-800 font-bold" id="modal-paket-name">Paket Umroh</p>
+                        <p class="text-xs text-gray-600">Tim kami akan segera menghubungi Anda melalui WhatsApp setelah form dikirim.</p>
+                    </div>
+                </div>
+                <form onsubmit="submitBooking(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Jamaah</label>
+                            <input type="text" required class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nomor WhatsApp</label>
+                            <input type="tel" required class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Jumlah Jamaah</label>
+                            <input type="number" min="1" value="1" required class="w-full px-3 py-2 border rounded-lg focus:ring-1 focus:ring-primary outline-none">
+                        </div>
+                        <button type="submit" class="w-full bg-secondary hover:bg-yellow-600 text-white font-bold py-3 rounded-lg mt-4 transition-colors">
+                            Kirim Permintaan Pesan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Box untuk Notifikasi (Pengganti Alert) -->
+    <div id="msg-box" class="fixed top-24 left-1/2 transform -translate-x-1/2 bg-white px-6 py-4 rounded-lg shadow-2xl border-l-4 border-accent z-[110] flex items-center space-x-4 transition-all duration-300 opacity-0 pointer-events-none translate-y-[-20px]">
+        <i class="fa-solid fa-check-circle text-accent text-2xl"></i>
+        <div>
+            <h4 class="font-bold text-gray-800" id="msg-title">Berhasil</h4>
+            <p class="text-sm text-gray-600" id="msg-desc">Aksi berhasil dilakukan.</p>
+        </div>
+        <button onclick="hideMsgBox()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <!-- Bottom Mobile Navigation (Ala Aplikasi) -->
+    <nav class="fixed bottom-0 w-full z-50 bg-white border-t border-gray-200 md:hidden shadow-[0_-5px_15px_rgba(0,0,0,0.05)] pb-[env(safe-area-inset-bottom)]">
+        <div class="flex justify-around items-center h-16 px-1">
+            <button onclick="navigate('beranda')" class="bottom-nav-link flex-1 flex flex-col items-center justify-center text-primary" data-target="beranda">
+                <i class="fa-solid fa-house text-xl mb-1"></i>
+                <span class="text-[9px] font-medium">Beranda</span>
+            </button>
+            <button onclick="navigate('tentang')" class="bottom-nav-link flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-primary transition-colors" data-target="tentang">
+                <i class="fa-solid fa-users text-xl mb-1"></i>
+                <span class="text-[9px] font-medium">Tentang</span>
+            </button>
+            <button onclick="navigate('paket')" class="bottom-nav-link flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-primary transition-colors" data-target="paket">
+                <i class="fa-solid fa-suitcase-rolling text-xl mb-1"></i>
+                <span class="text-[9px] font-medium">Paket</span>
+            </button>
+            <button onclick="navigate('info')" class="bottom-nav-link flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-primary transition-colors" data-target="info">
+                <i class="fa-solid fa-newspaper text-xl mb-1"></i>
+                <span class="text-[9px] font-medium">Info</span>
+            </button>
+            <button onclick="navigate('galeri')" class="bottom-nav-link flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-primary transition-colors" data-target="galeri">
+                <i class="fa-solid fa-images text-xl mb-1"></i>
+                <span class="text-[9px] font-medium">Galeri</span>
+            </button>
+            <button onclick="navigate('kontak')" class="bottom-nav-link flex-1 flex flex-col items-center justify-center text-gray-400 hover:text-primary transition-colors" data-target="kontak">
+                <i class="fa-solid fa-headset text-xl mb-1"></i>
+                <span class="text-[9px] font-medium">Kontak</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-24 md:pb-8 border-t-4 border-secondary">
+                        <li>Badal Umroh & Haji</li>
+                        <li>Pengurusan Visa & Paspor</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold text-lg mb-4 text-white border-b border-gray-700 pb-2 inline-block">Berlangganan Info</h4>
+                    <p class="text-sm text-gray-400 mb-4">Dapatkan update harga promo umroh terbaru.</p>
+                    <form onsubmit="handleSubscribe(event)" class="flex">
+                        <input type="email" placeholder="Email Anda" required class="w-full px-3 py-2 bg-gray-800 text-white rounded-l border border-gray-700 focus:outline-none focus:border-secondary">
+                        <button type="submit" class="bg-secondary px-4 py-2 rounded-r hover:bg-yellow-600 transition-colors"><i class="fa-solid fa-envelope"></i></button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                <p>&copy; 2026 PT Noor Abika Tours & Travel. Hak Cipta Dilindungi.</p>
+                <div class="mt-4 md:mt-0">
+                    <span>Dibangun dengan Infrastruktur HTML + Supabase</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==========================================
+        // INFRASTRUKTUR SUPABASE (Mock Implementation)
+        // ==========================================
+        /* 
+           Ganti kredensial di bawah dengan kredensial nyata dari project Supabase Anda.
+           Karena ini adalah kode yang harus jalan tanpa error di sisi pengguna, 
+           kita membuat fallback data dummy jika Supabase gagal connect.
+        */
+        const SUPABASE_URL = 'https://xyzcompany.supabase.co'; 
+        const SUPABASE_KEY = 'eyJhbGci...'; // API KEY PUBLIC
+        
+        // Inisialisasi Supabase 
+        // const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        // Mock API Functions (Mensimulasikan pengambilan data dari Supabase)
+        async function fetchPackages() {
+            // Dalam implementasi nyata: return await supabase.from('packages').select('*');
+            return [
+                { id: 1, title: 'Umrah Exclusive 12 Hari', price: 'Rp 39.500.000', priceCore: 39500000, desc: 'Fasilitas premium, hotel bintang 5 dekat dengan pelataran Masjidil Haram dan Masjid Nabawi.', hotel: 'Movenpick / setaraf', flight: 'Garuda Indonesia Direct', tag: 'Terlaris' },
+                { id: 2, title: 'Umrah Berkah 9 Hari', price: 'Rp 26.900.000', priceCore: 26900000, desc: 'Paket hemat dengan fasilitas terjamin. Cocok untuk Anda yang memiliki waktu libur terbatas.', hotel: 'Olayan / setaraf', flight: 'Oman Air / Saudia', tag: 'Hemat' },
+                { id: 3, title: 'Umrah Plus Turki 12 Hari', price: 'Rp 43.750.000', priceCore: 43750000, desc: 'Ibadah umrah sekaligus wisata Islami mengunjungi kota-kota bersejarah di Turki (Istanbul & Bursa).', hotel: 'Hilton / setaraf', flight: 'Turkish Airlines', tag: 'Spesial' },
+            ];
+        }
+
+        async function fetchNews() {
+            // Dalam implementasi nyata: return await supabase.from('news').select('*').limit(3);
+            return [
+                { id: 1, title: 'Persiapan Fisik dan Mental Sebelum Berangkat Umroh', date: '12 Okt 2026', img: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=1000&auto=format&fit=crop' },
+                { id: 2, title: 'Biaya dan Regulasi Visa Umrah Terbaru Tahun Ini', date: '05 Okt 2026', img: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=1000&auto=format&fit=crop' },
+                { id: 3, title: '15 Keutamaan Menjalankan Ibadah Umroh di Bulan Ramadhan', date: '28 Sep 2026', img: 'https://images.unsplash.com/photo-1579471569766-3d778fb86b51?q=80&w=1000&auto=format&fit=crop' }
+            ];
+        }
+
+        async function fetchGallery() {
+            // Galeri Foto dari Tanah Suci (Mock)
+            return [
+                'https://images.unsplash.com/photo-1565552643982-2d184f4f727f?q=80&w=600&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?q=80&w=600&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1579471569766-3d778fb86b51?q=80&w=600&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?q=80&w=600&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1610443818318-7b9af8be0b2d?q=80&w=600&auto=format&fit=crop',
+                'https://images.unsplash.com/photo-1567156910609-b6dc245f7c32?q=80&w=600&auto=format&fit=crop'
+            ];
+        }
+
+        const pengurusData = [
+            { name: 'H. Abdullah Yusuf', role: 'Direktur Utama' },
+            { name: 'Hj. Siti Hasanah', role: 'Manager Operasional' },
+            { name: 'Ustadz Ahmad Faizi, Lc', role: 'Pembimbing Ibadah (Muthawwif)' }
+        ];
+
+        const testimoniData = [
+            { name: 'Bpk. Anwar Sadat', desc: 'Pelayanan Noor Abika sangat memuaskan, dari pendaftaran sampai kepulangan terorganisir dengan rapi. Muthawwif sangat berilmu.', rate: 5 },
+            { name: 'Ibu Fatimah Zahra', desc: 'Hotelnya benar-benar dekat sesuai dengan brosur. Fasilitas lounge di bandara juga sangat membantu jamaah lansia seperti ibu saya.', rate: 5 },
+            { name: 'Keluarga Bpk. Rahman', desc: 'Umroh plus Turki yang sangat berkesan. Makanan halal terjamin selama perjalanan di Turki dan bimbingan ibadahnya khusyuk.', rate: 5 }
+        ];
+
+        // ==========================================
+        // UI & INTERAKSI (Vanilla JS)
+        // ==========================================
+
+        // SPA Navigation
+        function navigate(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page-section').forEach(page => {
+                page.classList.remove('active');
+            });
+            // Show target page
+            const target = document.getElementById('page-' + pageId);
+            if(target) target.classList.add('active');
+            
+            // Update Active Link State (Desktop)
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('text-primary', 'font-bold');
+            });
+            const correspondingDesktop = Array.from(document.querySelectorAll('.nav-link')).find(el => el.getAttribute('onclick').includes(pageId));
+            if(correspondingDesktop) correspondingDesktop.classList.add('text-primary', 'font-bold');
+
+            // Update Active Link State (Mobile Bottom Nav)
+            document.querySelectorAll('.bottom-nav-link').forEach(link => {
+                link.classList.remove('text-primary');
+                link.classList.add('text-gray-400');
+            });
+            const activeBottomLink = document.querySelector(`.bottom-nav-link[data-target="${pageId}"]`);
+            if (activeBottomLink) {
+                activeBottomLink.classList.remove('text-gray-400');
+                activeBottomLink.classList.add('text-primary');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-md');
+                nav.classList.remove('py-2');
+            } else {
+                nav.classList.remove('shadow-md');
+                nav.classList.add('py-2');
+            }
+        });
+
+        // ==========================================
+        // RENDERING DATA KE HTML
+        // ==========================================
+        async function renderData() {
+            // Render Berita (Beranda & Info)
+            const news = await fetchNews();
+            const beritaHTML = news.map(item => `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow border border-gray-100 group cursor-pointer">
+                    <div class="h-48 overflow-hidden">
+                        <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold text-secondary tracking-widest uppercase mb-2 block">${item.date}</span>
+                        <h3 class="font-serif font-bold text-lg text-gray-800 mb-3 group-hover:text-primary transition-colors line-clamp-2">${item.title}</h3>
+                        <p class="text-gray-500 text-sm">Baca selengkapnya <i class="fa-solid fa-arrow-right text-xs ml-1"></i></p>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('beranda-berita-container').innerHTML = beritaHTML;
+            document.getElementById('artikel-container').innerHTML = beritaHTML; // Re-use for info page
+
+            // Render Paket Umroh
+            const packages = await fetchPackages();
+            const paketHTML = packages.map(pkg => `
+                <div class="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all border border-gray-100 relative group flex flex-col h-full">
+                    <div class="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-sm">${pkg.tag}</div>
+                    <div class="p-8 flex-grow">
+                        <h3 class="text-2xl font-serif font-bold text-gray-800 mb-2">${pkg.title}</h3>
+                        <p class="text-primary text-3xl font-bold mb-4">${pkg.price}</p>
+                        <p class="text-gray-600 text-sm mb-6 leading-relaxed">${pkg.desc}</p>
+                        
+                        <div class="space-y-3 mb-8">
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fa-solid fa-hotel w-6 text-secondary"></i>
+                                <span>${pkg.hotel}</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fa-solid fa-plane w-6 text-secondary"></i>
+                                <span>${pkg.flight}</span>
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600">
+                                <i class="fa-solid fa-bus w-6 text-secondary"></i>
+                                <span>Transportasi Bus VIP</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-gray-50 mt-auto">
+                        <button onclick="openBookingModal('${pkg.title}')" class="w-full py-3 bg-primary hover:bg-emerald-800 text-white rounded-xl font-bold transition-colors">
+                            Pesan Sekarang
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('paket-container').innerHTML = paketHTML;
+
+            // Render Pengurus
+            const pengurusHTML = pengurusData.map(p => `
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 hover:-translate-y-1 transition-transform">
+                    <div class="w-24 h-24 mx-auto bg-gray-200 rounded-full mb-4 flex items-center justify-center text-gray-400 overflow-hidden">
+                        <i class="fa-solid fa-user text-4xl"></i>
+                    </div>
+                    <h4 class="font-bold text-lg text-gray-800">${p.name}</h4>
+                    <p class="text-secondary text-sm">${p.role}</p>
+                </div>
+            `).join('');
+            document.getElementById('pengurus-container').innerHTML = pengurusHTML;
+
+            // Render Testimoni
+            const testHTML = testimoniData.map(t => `
+                <div class="bg-white p-6 rounded-2xl shadow-sm">
+                    <div class="flex text-amber-400 text-sm mb-3">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p class="text-gray-600 italic text-sm mb-4 leading-relaxed">"${t.desc}"</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold mr-3">
+                            ${t.name.charAt(5) || t.name.charAt(0)}
+                        </div>
+                        <span class="font-bold text-gray-800 text-sm">${t.name}</span>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('testimoni-container').innerHTML = testHTML;
+
+            // Render Galeri (Instagram Style)
+            const gallery = await fetchGallery();
+            const galeriHTML = gallery.map((img, index) => `
+                <div class="relative aspect-square overflow-hidden group gallery-item cursor-pointer">
+                    <img src="${img}" alt="Galeri Umroh ${index+1}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="gallery-overlay absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-300 flex items-center justify-center text-white text-3xl">
+                        <i class="fa-brands fa-instagram"></i>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('galeri-container').innerHTML = galeriHTML;
+        }
+
+        // ==========================================
+        // FUNGSI FORM & NOTIFIKASI
+        // ==========================================
+        
+        function showMsgBox(title, desc, isError = false) {
+            const box = document.getElementById('msg-box');
+            document.getElementById('msg-title').innerText = title;
+            document.getElementById('msg-desc').innerText = desc;
+            
+            if(isError) {
+                box.classList.replace('border-accent', 'border-red-500');
+                box.querySelector('i').className = 'fa-solid fa-circle-exclamation text-red-500 text-2xl';
+            } else {
+                box.classList.replace('border-red-500', 'border-accent');
+                box.querySelector('i').className = 'fa-solid fa-check-circle text-accent text-2xl';
+            }
+
+            box.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
+            box.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => hideMsgBox(), 4000);
+        }
+
+        function hideMsgBox() {
+            const box = document.getElementById('msg-box');
+            box.classList.add('opacity-0', 'pointer-events-none', 'translate-y-[-20px]');
+            box.classList.remove('opacity-100', 'translate-y-0');
+        }
+
+        function handleContact(e) {
+            e.preventDefault();
+            // Implementasi simpan ke Supabase DB
+            // await supabase.from('contacts').insert([{ name: ..., phone: ... }])
+            e.target.reset();
+            showMsgBox('Pesan Terkirim', 'Terima kasih, tim kami akan membalas pesan Anda maksimal 1x24 Jam.');
+        }
+
+        function handleSubscribe(e) {
+            e.preventDefault();
+            e.target.reset();
+            showMsgBox('Berhasil Berlangganan', 'Email Anda telah didaftarkan untuk menerima info promo umroh terbaru.');
+        }
+
+        // Booking Modal Logic
+        function openBookingModal(paketName) {
+            document.getElementById('modal-paket-name').innerText = 'Pemesanan: ' + paketName;
+            document.getElementById('booking-modal').classList.remove('hidden');
+            setTimeout(() => {
+                document.querySelector('#booking-modal > div').classList.remove('scale-95');
+                document.querySelector('#booking-modal > div').classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            document.querySelector('#booking-modal > div').classList.add('scale-95');
+            document.querySelector('#booking-modal > div').classList.remove('scale-100');
+            setTimeout(() => {
+                document.getElementById('booking-modal').classList.add('hidden');
+            }, 200);
+        }
+
+        function submitBooking(e) {
+            e.preventDefault();
+            closeModal();
+            showMsgBox('Request Diterima', 'CS kami akan segera menghubungi Anda melalui WhatsApp untuk proses selanjutnya.');
+        }
+
+        // Initialize App on Load
+        window.onload = () => {
+            renderData();
+        };
+    </script>
+</body>
+</html>
